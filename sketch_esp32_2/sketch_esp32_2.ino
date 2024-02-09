@@ -10,7 +10,7 @@ DHT dht(DHTPIN, DHTTYPE);
 
 const char* ssid = "aterm-4d09d9-g";
 const char* password = "1fde8dda40d72";
-const char* serverName = "http://192.168.10.105:8080/data";
+const char* serverName = "https://home-iot-project-413811.an.r.appspot.com/data";
 
 
 void setup() {
