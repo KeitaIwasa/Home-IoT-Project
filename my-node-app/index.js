@@ -34,7 +34,14 @@ app.post('/data', async (req, res) => {
 
 
 app.get('/data', async (req, res) => {
-    const query = datastore.createQuery('SensorData').order('timestamp', {descending: true});
+    // 現在時刻から24時間前の時刻を計算
+    const oneDayAgo = new Date();
+    oneDayAgo.setHours(oneDayAgo.getHours() - 24);
+
+    const query = datastore.createQuery('SensorData')
+        .filter('timestamp', '>', oneDayAgo)
+        .order('timestamp', {descending: true});
+
     try {
         const [entities] = await datastore.runQuery(query);
         const data = entities.map(entity => {
@@ -52,28 +59,6 @@ app.get('/data', async (req, res) => {
         res.status(500).send('Failed to fetch data');
     }
 });
-
-app.get('/data/last24hours', async (req, res) => {
-    const oneDayAgo = new Date();
-    oneDayAgo.setHours(oneDayAgo.getHours() - 24);
-  
-    const query = datastore.createQuery('SensorData')
-      .filter('timestamp', '>', oneDayAgo)
-      .order('timestamp', {descending: false});
-  
-    try {
-      const [entities] = await datastore.runQuery(query);
-      const data = entities.map(entity => ({
-        temperature: entity.temperature,
-        humidity: entity.humidity,
-        timestamp: entity.timestamp
-      }));
-      res.json(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      res.status(500).send('Failed to fetch data');
-    }
-  });
   
 
 app.get('/dashboard', async (req, res) => {
@@ -92,7 +77,6 @@ app.get('/dashboard', async (req, res) => {
         res.status(500).send('Failed to fetch data');
     }
 });
-
 
 
 app.listen(port, () => {
