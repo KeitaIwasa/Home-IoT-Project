@@ -1,4 +1,5 @@
-const ctx = document.getElementById('tempHumidityChart').getContext('2d');
+const temperatureCtx = document.getElementById('temperatureChart').getContext('2d');
+const humidityCtx = document.getElementById('humidityChart').getContext('2d');
 
 // APIからデータを取得する関数
 async function fetchData() {
@@ -7,47 +8,51 @@ async function fetchData() {
     return data;
 }
 
+function updateLatestMeasurements(data) {
+    // 直近のデータを取得
+    const latestData = data[data.length - 1];
+    document.getElementById('latestTemperature').textContent = latestData.temperature.toFixed(2);
+    document.getElementById('latestHumidity').textContent = latestData.humidity.toFixed(2);
+}
+
 // 時間単位でデータをグループ化し、各グループの平均値を計算する関数
 function processAverageData(data) {
-    // グループ化されたデータを保持するオブジェクト
     const groupedData = {};
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24*60*60*1000);
 
-    // 期間内のすべての時間帯にデータを初期化（ここで欠損データを0で扱う）
-    const startHour = new Date(data[0].timestamp);
-    startHour.setMinutes(0, 0, 0); // 最初の時間帯を設定
-    const endHour = new Date();
-    endHour.setMinutes(59, 59, 999); // 現在の時間帯を設定
-
-    for (let hour = startHour; hour <= endHour; hour.setHours(hour.getHours() + 1)) {
-        const key = `${hour.getFullYear()}-${hour.getMonth() + 1}-${hour.getDate()}T${hour.getHours()}`;
-        groupedData[key] = { temperature: [0], humidity: [0] }; // 欠損データを0で初期化
+    // 過去24時間の各時間帯に対してデータを初期化
+    for(let hour = oneDayAgo; hour <= now; hour.setHours(hour.getHours() + 1)) {
+        const key = hour.toISOString().substring(0, 13); // "YYYY-MM-DDTHH"形式のキー
+        groupedData[key] = { temperature: [], humidity: [] };
     }
 
-    // データをグループ化し、実際にデータが存在する場合は0を上書き
+    // データを時間帯ごとにグループ化
     data.forEach(entry => {
         const date = new Date(entry.timestamp);
-        const key = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T${date.getHours()}`;
-        if (groupedData[key]) { // すでにキーが存在する場合、0を上書き
-            groupedData[key].temperature[0] = entry.temperature;
-            groupedData[key].humidity[0] = entry.humidity;
-        } else { // キーが存在しない場合（理論上はすべての時間帯が初期化されているため発生しないはず）
-            groupedData[key] = {
-                temperature: [entry.temperature],
-                humidity: [entry.humidity]
-            };
+        const key = date.toISOString().substring(0, 13); // "YYYY-MM-DDTHH"形式のキー
+        if(groupedData.hasOwnProperty(key)) {
+            groupedData[key].temperature.push(entry.temperature);
+            groupedData[key].humidity.push(entry.humidity);
         }
     });
 
-    // 各グループの平均値を計算
     const labels = [];
     const tempAverages = [];
     const humidityAverages = [];
+
     Object.keys(groupedData).forEach(key => {
-        labels.push(key);
-        const tempAvg = groupedData[key].temperature.reduce((a, b) => a + b, 0) / groupedData[key].temperature.length;
-        const humidityAvg = groupedData[key].humidity.reduce((a, b) => a + b, 0) / groupedData[key].humidity.length;
-        tempAverages.push(tempAvg);
-        humidityAverages.push(humidityAvg);
+        labels.push(key + ":00"); // ラベルに":00"を追加して、時刻を示す
+
+        // 温度の平均値を計算
+        const temps = groupedData[key].temperature;
+        const tempAverage = temps.length ? temps.reduce((a, b) => a + b, 0) / temps.length : 0;
+        tempAverages.push(tempAverage);
+
+        // 湿度の平均値を計算
+        const humids = groupedData[key].humidity;
+        const humidityAverage = humids.length ? humids.reduce((a, b) => a + b, 0) / humids.length : 0;
+        humidityAverages.push(humidityAverage);
     });
 
     return { labels, tempAverages, humidityAverages };
@@ -58,7 +63,8 @@ async function drawChart() {
     const rawData = await fetchData();
     const { labels, tempAverages, humidityAverages } = processAverageData(rawData);
 
-    const chart = new Chart(ctx, {
+    // 温度グラフ
+    new Chart(temperatureCtx, {
         type: 'line',
         data: {
             labels: labels,
@@ -66,30 +72,34 @@ async function drawChart() {
                 label: 'Average Temperature (°C)',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderColor: 'rgba(255, 99, 132, 1)',
-                yAxisID: 'y',
                 data: tempAverages,
-            }, {
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // 湿度グラフ
+    new Chart(humidityCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
                 label: 'Average Humidity (%)',
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgba(54, 162, 235, 1)',
-                yAxisID: 'y1',
                 data: humidityAverages,
             }]
         },
         options: {
             scales: {
                 y: {
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
-                },
-                y1: {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    grid: {
-                        drawOnChartArea: false,
-                    },
+                    beginAtZero: true
                 }
             }
         }
