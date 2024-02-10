@@ -19,7 +19,7 @@ function updateLatestMeasurements(data) {
 function processAverageData(data) {
     const groupedData = {};
     const now = new Date();
-    const oneDayAgo = new Date(now.getTime() - 24*60*60*1000);
+    const oneDayAgo = new Date(now.getTime() - 23*60*60*1000);
 
     // 過去24時間の各時間帯に対してデータを初期化
     for(let hour = oneDayAgo; hour <= now; hour.setHours(hour.getHours() + 1)) {
@@ -42,7 +42,12 @@ function processAverageData(data) {
     const humidityAverages = [];
 
     Object.keys(groupedData).forEach(key => {
-        labels.push(key + ":00"); // ラベルに":00"を追加して、時刻を示す
+        // ISO 8601形式に準じた日付文字列を作成（時刻を含む）
+        const date = new Date(`${key}:00:00Z`); // "Z"を追加してUTCとして解釈させる
+        const offset = 9; // GMT+9のオフセット
+        const localDate = new Date(date.getTime() + offset * 60 * 60 * 1000); // UTC時間に9時間を加算
+        const hours = localDate.getUTCHours().toString().padStart(2, '0'); // 変換後の時間を取得
+        labels.push(hours); // "HH"形式のラベルとして追加
 
         // 温度の平均値を計算
         const temps = groupedData[key].temperature;
@@ -70,13 +75,18 @@ async function drawChart() {
         data: {
             labels: labels,
             datasets: [{
-                label: 'Average Temperature (°C)',
+                label: '',
+                fill: 'origin',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 data: tempAverages,
+
             }]
         },
         options: {
+            legend: {
+                display: false
+            },
             scales: {
                 y: {
                     beginAtZero: true
@@ -91,13 +101,17 @@ async function drawChart() {
         data: {
             labels: labels,
             datasets: [{
-                label: 'Average Humidity (%)',
+                label: '',
+                fill: 'origin',
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 data: humidityAverages,
             }]
         },
         options: {
+            legend: {
+                display: false
+            },            
             scales: {
                 y: {
                     beginAtZero: true
