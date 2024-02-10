@@ -19,7 +19,6 @@ app.post('/data', async (req, res) => {
         data: [
             { name: 'temperature', value: temperature },
             { name: 'humidity', value: humidity },
-            { name: 'timestamp', value: new Date() } // タイムスタンプを追加
         ],
     };
 
