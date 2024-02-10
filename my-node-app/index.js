@@ -37,9 +37,9 @@ app.post('/data', async (req, res) => {
 
 
 app.get('/data', async (req, res) => {
-    // 現在時刻から24時間前の時刻を計算
+    // 現在時刻から23時間前の時刻を計算
     const oneDayAgo = new Date();
-    oneDayAgo.setHours(oneDayAgo.getHours() - 24);
+    oneDayAgo.setHours(oneDayAgo.getHours() - 23);
 
     const query = datastore.createQuery('SensorData')
         .filter('timestamp', '>', oneDayAgo)
