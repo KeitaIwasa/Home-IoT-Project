@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Temperature and Humidity Data</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature and Humidity Data</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.jsを読み込む -->
 </head>
 <body>
-  <div>
-    <canvas id="tempChart"></canvas>
-    <canvas id="humidityChart"></canvas>
-  </div>
-  
-  <script src="..\script\last24chart.js"></script>
+    <h1>Temperature and Humidity Data over the Last 24 Hours</h1>
+    <canvas id="tempHumidityChart"></canvas> <!-- グラフ描画領域 -->
+    <script src="chart_script.js"></script> <!-- JavaScriptファイル -->
 </body>
 </html>
