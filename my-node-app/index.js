@@ -34,24 +34,22 @@ app.post('/data', async (req, res) => {
 
 
 app.get('/data', async (req, res) => {
-    const query = datastore.createQuery('SensorData').order('timestamp', {descending: true});
+    const oneDayAgo = new Date();
+    oneDayAgo.setHours(oneDayAgo.getHours() - 24);
+
+    const query = datastore.createQuery('SensorData')
+                           .filter('timestamp', '>', oneDayAgo)
+                           .order('timestamp', {descending: true});
     try {
         const [entities] = await datastore.runQuery(query);
-        const data = entities.map(entity => {
-            const dataObject = {
-                id: entity[datastore.KEY].id,
-                temperature: entity.temperature,
-                humidity: entity.humidity,
-                timestamp: entity.timestamp
-            };
-            return dataObject;
-        });
-        res.json(data);
+        // データを整形してクライアントに送信
+        res.json(entities);
     } catch (error) {
         console.error('Error fetching data:', error);
         res.status(500).send('Failed to fetch data');
     }
 });
+
 
 app.get('/dashboard', async (req, res) => {
     const query = datastore.createQuery('SensorData').order('timestamp', {descending: true}).limit(10);
