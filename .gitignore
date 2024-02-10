@@ -1,6 +1,9 @@
 # VScode settings
 .vscode
 
+# ローカル開発用
+*LOCAL*
+
 # Logs
 logs
 *.log
