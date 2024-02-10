@@ -1,4 +1,4 @@
-runtime: nodejs14 # 使用するNode.jsのバージョンを指定
+runtime: nodejs18 # 使用するNode.jsのバージョンを指定
 
 env: standard # スタンダード環境を使用
 
