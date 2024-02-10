@@ -11,8 +11,8 @@ async function fetchData() {
 function updateLatestMeasurements(data) {
     // 直近のデータを取得
     const latestData = data[data.length - 1];
-    document.getElementById('latestTemperature').textContent = latestData.temperature.toFixed(2);
-    document.getElementById('latestHumidity').textContent = latestData.humidity.toFixed(2);
+    document.getElementById('latestTemperature').textContent = latestData.temperature.toFixed(1);
+    document.getElementById('latestHumidity').textContent = latestData.humidity.toFixed(1);
 }
 
 // 時間単位でデータをグループ化し、各グループの平均値を計算する関数
@@ -61,6 +61,7 @@ function processAverageData(data) {
 // グラフを描画する関数
 async function drawChart() {
     const rawData = await fetchData();
+    updateLatestMeasurements(rawData); // 直近の測定値を更新
     const { labels, tempAverages, humidityAverages } = processAverageData(rawData);
 
     // 温度グラフ
