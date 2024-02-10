@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>岩佐家の部屋の気温と湿度</title>
+    <link href="css/dashboard_style.css" rel="stylesheet" type="text/css" media="all">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.jsを読み込む -->
 </head>
 <body>
-    <script>
+    <script class="date">
         var today=new Date(); 
 
         //年・月・日・曜日を取得
@@ -21,16 +22,16 @@
         //年・月・日・曜日を書き出す
         document.write(year+"年"+month+"月"+day+"日 "+week_ja[week]+"曜日");
     </script>
-    <div>
+    <div class="container">
         <h1>Temperature</h1>
         <h2><span id="latestTemperature"></span>℃</h2>
         <canvas id="temperatureChart"></canvas> <!-- 温度グラフ描画領域 -->
     </div>
-    <div>
+    <div class="container">
         <h1>Humidity</h1>
         <h2><span id="latestHumidity"></span>%</h2>
         <canvas id="humidityChart"></canvas> <!-- 湿度グラフ描画領域 -->        
     </div>
-    <script src="script/chart_script.js"></script> <!-- JavaScriptファイル -->
+    <script src="script/script.js"></script> <!-- JavaScriptファイル -->
 </body>
 </html>
