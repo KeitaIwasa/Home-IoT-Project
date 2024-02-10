@@ -6,6 +6,9 @@ const port = 8080;
 // Google Cloud Datastoreのインスタンスを初期化
 const datastore = new Datastore();
 
+// 静的ファイルを提供するディレクトリを設定
+app.use(express.static('public'));
+
 app.use(express.json());
 
 app.post('/data', async (req, res) => {
@@ -61,22 +64,11 @@ app.get('/data', async (req, res) => {
 });
   
 
-app.get('/dashboard', async (req, res) => {
-    const query = datastore.createQuery('SensorData').order('timestamp', {descending: true}).limit(10);
-    try {
-        const [entities] = await datastore.runQuery(query);
-        let htmlResponse = '<h1>Temperature and Humidity Data</h1>';
-        htmlResponse += '<ul>';
-        entities.forEach(entity => {
-            htmlResponse += `<li>Temperature: ${entity.temperature}, Humidity: ${entity.humidity}, Timestamp: ${entity.timestamp}</li>`;
-        });
-        htmlResponse += '</ul>';
-        res.send(htmlResponse);
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        res.status(500).send('Failed to fetch data');
-    }
+// '/dashboard'エンドポイントへのGETリクエストをdashboard.htmlにリダイレクト
+app.get('/dashboard', (req, res) => {
+    res.sendFile(__dirname + '/public/dashboard.html');
 });
+
 
 
 app.listen(port, () => {
