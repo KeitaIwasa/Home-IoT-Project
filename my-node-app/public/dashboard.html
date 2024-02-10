@@ -7,10 +7,16 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.jsを読み込む -->
 </head>
 <body>
-    <h1>Temperature</h1>
-    <canvas id="temperatureChart"></canvas> <!-- 温度グラフ描画領域 -->
-    <h1>Humidity</h1>
-    <canvas id="humidityChart"></canvas> <!-- 湿度グラフ描画領域 -->
-    <script src="script.js"></script> <!-- JavaScriptファイル -->
+    <div>
+        <h1>Temperature</h1>
+        <h2><span id="latestTemperature"></span>℃</h2>
+        <canvas id="temperatureChart"></canvas> <!-- 温度グラフ描画領域 -->
+    </div>
+    <div>
+        <h1>Humidity</h1>
+        <h2><span id="latestHumidity"></span>%</h2>
+        <canvas id="humidityChart"></canvas> <!-- 湿度グラフ描画領域 -->        
+    </div>
+    <script src="script/chart_script.js"></script> <!-- JavaScriptファイル -->
 </body>
 </html>
