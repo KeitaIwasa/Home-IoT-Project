@@ -84,16 +84,12 @@ async function drawChart() {
             }]
         },
         options: {
+            aspectRatio: 1.8,
             plugins: {
                 legend: {
                     display: false
                 }
             },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
         }
     });
 
@@ -111,16 +107,12 @@ async function drawChart() {
             }]
         },
         options: {
+            aspectRatio: 1.8,
             plugins: {
                 legend: {
                     display: false
                 }
             },                       
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
         }
     });
 }
