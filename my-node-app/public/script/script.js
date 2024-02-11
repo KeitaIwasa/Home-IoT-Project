@@ -18,10 +18,10 @@ function updateLatestMeasurements(data) {
 // 時間単位でデータをグループ化し、各グループの平均値を計算する関数
 function processAverageData(data) {
     const groupedData = {};
-    const now = new Date();
+    const now = new Date(data[0].timestamp);
     const oneDayAgo = new Date(now.getTime() - 23*60*60*1000);
 
-    // 過去24時間の各時間帯に対してデータを初期化
+    // 過去23時間の各時間帯に対してデータを初期化
     for(let hour = oneDayAgo; hour <= now; hour.setHours(hour.getHours() + 1)) {
         const key = hour.toISOString().substring(0, 13); // "YYYY-MM-DDTHH"形式のキー
         groupedData[key] = { temperature: [], humidity: [] };
