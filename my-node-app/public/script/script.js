@@ -90,6 +90,9 @@ async function drawChart() {
                     display: false
                 }
             },
+            layout: {
+                padding: 20
+            }
         }
     });
 
@@ -112,7 +115,10 @@ async function drawChart() {
                 legend: {
                     display: false
                 }
-            },                       
+            },  
+            layout: {
+                padding: 10
+            }                     
         }
     });
 }
