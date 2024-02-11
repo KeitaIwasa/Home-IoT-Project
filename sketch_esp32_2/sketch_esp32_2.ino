@@ -60,6 +60,6 @@ void loop() {
     Serial.println("Error in WiFi connection");
   }
 
-  delay(30000); // 10秒ごとにデータを送信
+  delay(60000); // １分ごとにデータを送信
 }
 
