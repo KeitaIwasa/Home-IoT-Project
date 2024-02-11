@@ -10,7 +10,7 @@ async function fetchData() {
 
 function updateLatestMeasurements(data) {
     // 直近のデータを取得
-    const latestData = data[data.length - 1];
+    const latestData = data[0];
     document.getElementById('latestTemperature').textContent = latestData.temperature.toFixed(1);
     document.getElementById('latestHumidity').textContent = latestData.humidity.toFixed(1);
 }
