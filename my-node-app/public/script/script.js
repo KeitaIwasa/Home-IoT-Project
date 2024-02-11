@@ -84,8 +84,10 @@ async function drawChart() {
             }]
         },
         options: {
-            legend: {
-                display: false
+            plugins: {
+                legend: {
+                    display: false
+                }
             },
             scales: {
                 y: {
@@ -109,9 +111,11 @@ async function drawChart() {
             }]
         },
         options: {
-            legend: {
-                display: false
-            },            
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },                       
             scales: {
                 y: {
                     beginAtZero: true
