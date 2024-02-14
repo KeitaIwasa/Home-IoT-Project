@@ -15,6 +15,22 @@ function updateLatestMeasurements(data) {
     document.getElementById('latestHumidity').textContent = latestData.humidity.toFixed(1);
 }
 
+function updateDataUpdateTime(data) {
+    if (data && data.length > 0) {
+        // 最新のデータのタイムスタンプを取得
+        const latestTime = new Date(data[0].timestamp);
+        const month = (latestTime.getMonth() + 1); // 月（0から始まるため、1を加える）
+        const day = latestTime.getDate(); // 日
+        const hours = latestTime.getHours().toString().padStart(2, '0'); // 時
+        const minutes = latestTime.getMinutes().toString().padStart(2, '0'); // 分
+        const seconds = latestTime.getSeconds().toString().padStart(2, '0'); // 秒
+        // タイムスタンプを任意のフォーマットに変換（例: "YYYY-MM-DD HH:mm:ss"）
+        const formattedTimestamp = `${month}月${day}日 ${hours}:${minutes}:${seconds}`;
+        // 更新時刻を表示
+        document.getElementById('dataUpdateTime').textContent = `データ更新時刻: ${formattedTimestamp}`;
+    }
+}
+
 // 時間単位でデータをグループ化し、各グループの平均値を計算する関数
 function processAverageData(data) {
     const groupedData = {};
@@ -67,6 +83,7 @@ function processAverageData(data) {
 async function drawChart() {
     const rawData = await fetchData();
     updateLatestMeasurements(rawData); // 直近の測定値を更新
+    updateDataUpdateTime(rawData); // データ更新時刻を更新
     const { labels, tempAverages, humidityAverages } = processAverageData(rawData);
 
     // 温度グラフ
@@ -91,7 +108,13 @@ async function drawChart() {
                 }
             },
             layout: {
-                padding: 20
+                padding: 10
+            },
+            scales: {
+                y: {
+                    suggestedMin: 10,
+                    suggestedMax: 30
+                }                 
             }
         }
     });
@@ -118,7 +141,13 @@ async function drawChart() {
             },  
             layout: {
                 padding: 10
-            }                     
+            }, 
+            scales: {
+                y: {
+                    suggestedMin: 25,
+                    suggestedMax: 75
+                }                 
+            }
         }
     });
 }
