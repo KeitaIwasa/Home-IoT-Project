@@ -4,6 +4,9 @@
 # ローカル開発用
 *LOCAL*
 
+# 認証情報
+credential
+
 # Logs
 logs
 *.log
