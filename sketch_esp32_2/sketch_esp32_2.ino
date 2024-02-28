@@ -94,7 +94,7 @@ void loop() {
     http.addHeader("Content-Type", "application/json");
 
     // JSONデータの作成
-    String httpRequestData = "{\"temperature\":" + String() + ", \"humidity\":" + String(h) + "}";
+    String httpRequestData = "{\"temperature\":" + String(t) + ", \"humidity\":" + String(h) + "}";
     
     int httpResponseCode = http.POST(httpRequestData);
 
