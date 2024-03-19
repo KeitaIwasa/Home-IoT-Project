@@ -1,16 +1,20 @@
 #include <PN532_SWHSU.h>
 #include <PN532.h>
 #include <SoftwareSerial.h>
+#include <Stepper.h>
 
 SoftwareSerial softSerial(2, 3); // RX, TX
 PN532_SWHSU pn532swhsu(softSerial);
 PN532 nfc(pn532swhsu);
+Stepper sm(2048, 8, 10, 9, 11);
+const uint8_t SPECIFIC_CARD_IDM[] = { 0x01, 0x40, 0x8A, 0x8F, 0x2E, 0x37, 0xB6, 0x60 };
 
 void setup() {
   Serial.begin(115200);
   Serial.println("Hello!");
 
   nfc.begin();
+  sm.setSpeed(15);
 
   uint32_t versiondata = nfc.getFirmwareVersion();
   if (!versiondata) {
@@ -54,6 +58,12 @@ void loop() {
     }
     Serial.println();
     
+    if (memcmp(idm, SPECIFIC_CARD_IDM, 8) == 0) {
+      Serial.println("Specific FeliCa card detected!");
+      sm.step((float)2048 * +90 / 360);
+      delay(1000);
+      sm.step((float)2048 * -90 / 360);
+    }
     // Wait 1 second before continuing
     delay(1000);
   }
