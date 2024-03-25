@@ -3,7 +3,7 @@
 #include <SoftwareSerial.h> //EspSoftwareSerialライブラリ必須
 #include <PN532_SWHSU.h>
 #include <PN532.h>
-SoftwareSerial SWSerial( 32, 33 ); // RX, TX
+SoftwareSerial SWSerial( 32, 33 ); // PN532のTX, RX
 PN532_SWHSU pn532swhsu( SWSerial );
 PN532 nfc( pn532swhsu );
 
