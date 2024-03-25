@@ -7,6 +7,26 @@
     <link rel="stylesheet" href="smart-lock_style.css">
 </head>
 <body>
+    <!-- Firebase SDK -->
+    <!-- Add the Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js"></script>
+    <!-- If you're using other services like Firestore, Auth, etc., include those SDKs here as well -->
+
+    <!-- Firebase configuration -->
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyBS18xpZZgjTVlVRyfmAsrK-RHs2SrpbR4",
+        authDomain: "home-iot-project-413811.firebaseapp.com",
+        databaseURL: "https://home-iot-project-413811-default-rtdb.firebaseio.com",
+        projectId: "home-iot-project-413811",
+        storageBucket: "home-iot-project-413811.appspot.com",
+        messagingSenderId: "1079694233536",
+        appId: "1:1079694233536:web:db677254b0af9f3d46c225"
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
     <div class="container">
         <button id="unlockButton">Unlock</button>
     </div>
