@@ -22,12 +22,11 @@ void setup() {
 
   esp_now_register_recv_cb(OnDataRecv);
 
-  sm.setSpeed(15);
+  sm.setSpeed(10);
 
 }
 
 void loop() {
-  // The receiver ESP32 doesn't need a loop
 }
 
 void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
@@ -35,8 +34,13 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
 
   if (packet.cardDetected) {
     Serial.println("Specific FeliCa card detected!");
-      sm.step((float)2048 * +90 / 360);
-      delay(1000);
-      sm.step((float)2048 * -90 / 360);
+    sm.step((float)2048 * +90 / 360);
+    delay(1000);
+    sm.step((float)2048 * -90 / 360);
+    // モーターの動作が完了した直後にピンをLOWにする
+    digitalWrite(32, LOW);
+    digitalWrite(25, LOW);
+    digitalWrite(33, LOW);
+    digitalWrite(26, LOW);  
   }
 }
