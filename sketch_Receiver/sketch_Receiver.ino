@@ -32,7 +32,7 @@ void setup() {
 void loop() {
   if (digitalRead(TACT_SWITCH_PIN) == LOW) { // タクトスイッチが押されたかどうかを確認
     unLock(); // モーターを動作させる関数を呼び出す
-    delay(3000);
+    delay(100);
   }
 }
 
@@ -40,7 +40,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
   memcpy(&packet, data, sizeof(packet));
   if (packet.cardDetected) {
     unLock(); 
-    delay(3000);
+    delay(100);
   }
 }
 
