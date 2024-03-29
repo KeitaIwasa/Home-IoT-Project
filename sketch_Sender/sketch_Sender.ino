@@ -31,8 +31,8 @@ esp_now_peer_info_t peerInfo; //setup()の直前に置くことでグローバ�
 
 void setup() {
   pinMode(15, INPUT_PULLUP);
-  pinMode(4, OUTPUT);
-  pinMode(2, ANALOG);
+  pinMode(4, OUTPUT); //電池残量測定用出力
+  pinMode(2, ANALOG); //電池残量測定用入力
 
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_15, 1);
   
@@ -42,18 +42,7 @@ void setup() {
   Serial.print("bootCount = ");
   Serial.println(bootCount);
 
-  // 電池残量確認・通知
   digitalWrite(4,HIGH);
-  analogSetAttenuation(ADC_0db);
-  float adc = analogRead(2);
-  float volt = adc / 4096 * 0.95;
-  Serial.print("VOLT = ");
-  Serial.println(volt);
-  if(volt < 0.75) { 
-    Serial.print(low_battery_message);
-    send_line();
-  }
-  digitalWrite(4,LOW);
 
   // 初回起動時は実行しない
   if (bootCount > 1) {
@@ -79,7 +68,7 @@ void setup() {
     uint32_t versiondata = nfc.getFirmwareVersion();
     
     if (!versiondata) {
-      Serial.print("Didn't find PN53x board");
+      Serial.println("Didn't find PN53x board");
       esp_deep_sleep_start();
     }
     // Got ok data, print it out!
@@ -119,6 +108,17 @@ void setup() {
       } 
     } 
   }
+  // 電池残量確認・通知
+  analogSetAttenuation(ADC_0db);
+  float adc = analogRead(2);
+  float volt = adc / 4096 * 0.95;
+  Serial.print("\nVOLT = ");
+  Serial.println(volt);
+  if(volt < 0.75) { 
+    Serial.print(low_battery_message);
+    send_line(volt);
+  }
+  digitalWrite(4, LOW);
   // ディープスリープ突入
   Serial.println("\nEntering Deep Sleep...");
   esp_deep_sleep_start();
@@ -134,7 +134,7 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 }
 
 // line通知
-void send_line() {
+void send_line(float get_volt) {
   // WiFi接続
   WiFi.begin(wifi_ssid, wifi_password);
 
@@ -163,7 +163,7 @@ void send_line() {
   Serial.println("Connected");
 
   // リクエスト送信
-  String query = String("message=") + String(low_battery_message);
+  String query = String("message=") + String(low_battery_message) + String("\nVOLT = ") + String(get_volt);
   String request = String("") +
                "POST /api/notify HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" +
