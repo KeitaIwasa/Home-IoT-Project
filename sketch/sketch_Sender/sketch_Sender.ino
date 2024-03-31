@@ -41,8 +41,19 @@ void setup() {
   Serial.begin(115200);
   Serial.print("bootCount = ");
   Serial.println(bootCount);
-
+  
+  // 電池残量確認・通知
   digitalWrite(4,HIGH);
+  analogSetAttenuation(ADC_0db);
+  float adc = analogRead(2);
+  float volt = adc / 4096 * 0.95;
+  Serial.print("\nVOLT = ");
+  Serial.println(volt);
+  if(volt < 0.75) { 
+    Serial.print(low_battery_message);
+    send_line(volt);
+  }
+  digitalWrite(4, LOW);
 
   // 初回起動時は実行しない
   if (bootCount > 1) {
@@ -108,17 +119,7 @@ void setup() {
       } 
     } 
   }
-  // 電池残量確認・通知
-  analogSetAttenuation(ADC_0db);
-  float adc = analogRead(2);
-  float volt = adc / 4096 * 0.95;
-  Serial.print("\nVOLT = ");
-  Serial.println(volt);
-  if(volt < 0.75) { 
-    Serial.print(low_battery_message);
-    send_line(volt);
-  }
-  digitalWrite(4, LOW);
+
   // ディープスリープ突入
   Serial.println("\nEntering Deep Sleep...");
   esp_deep_sleep_start();
